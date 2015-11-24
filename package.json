@@ -6,6 +6,7 @@
     "start": "react-native start"
   },
   "dependencies": {
+    "buffer": "^3.5.2",
     "react-native": "^0.16.0-rc"
   }
 }
