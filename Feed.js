@@ -2,6 +2,7 @@
 
 var React = require('react-native');
 var moment = require('moment');
+var PushPayload = require('./PushPayload');
 var {
   Text,
   View,
@@ -9,7 +10,8 @@ var {
   ListView,
   ActivityIndicatorIOS,
   StyleSheet,
-  Image
+  Image,
+  TouchableHighlight
 } = React;
 
 class Feed extends Component {
@@ -53,26 +55,41 @@ class Feed extends Component {
 		});
 	}
 
+	pressRow(rowData) {
+		this.props.navigator.push({
+			title: 'Push Event',
+			component: PushPayload,
+			passProps: {
+				pushEvent: rowData
+			}
+		});
+	}
+
 	renderRow(rowData) {
 		return (
-			<View style={styles.viewRowData}>
-				<Image
-					source={{uri: rowData.actor.avatar_url}}
-					style={styles.imageRowData} />
-			
-				<View style={styles.viewRowDataDetail}>
-					
-					<Text style={styles.rowDataDetailText}>
-						{moment(rowData.created_at).fromNow()}
-					</Text>
-					<Text style={styles.rowDataDetailText}>
-						{rowData.actor.login}
-					</Text>
-					<Text style={styles.rowDataDetailText}>
-						at <Text style={styles.rowDataDetailTextBold}>{rowData.repo.name}</Text>
-					</Text>
+			<TouchableHighlight
+				onPress={() => this.pressRow(rowData)}
+				underlayColor='#ddd'
+				>
+				<View style={styles.viewRowData}>
+					<Image
+						source={{uri: rowData.actor.avatar_url}}
+						style={styles.imageRowData} />
+				
+					<View style={styles.viewRowDataDetail}>
+						
+						<Text style={styles.rowDataDetailText}>
+							{moment(rowData.created_at).fromNow()}
+						</Text>
+						<Text style={styles.rowDataDetailText}>
+							{rowData.actor.login}
+						</Text>
+						<Text style={styles.rowDataDetailText}>
+							at <Text style={styles.rowDataDetailTextBold}>{rowData.repo.name}</Text>
+						</Text>
+					</View>
 				</View>
-			</View>
+			</TouchableHighlight>
 		);
 	}
 	
