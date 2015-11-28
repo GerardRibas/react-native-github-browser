@@ -10,6 +10,8 @@ var {
   TabBarIOS
 } = React;
 
+var Feed = require('./Feed')
+
 class AppContainer extends Component {
 
 	constructor(props) {
@@ -27,7 +29,7 @@ class AppContainer extends Component {
           selected={this.state.selectedTab == 'feed'} 
           icon={require('image!inbox')} 
           onPress={() => this.setState({selectedTab : 'feed'})} >
-            <Text style={styles.welcome}>Tab 1</Text>
+            <Feed />
           </TabBarIOS.Item>
           <TabBarIOS.Item 
           title="Search"
