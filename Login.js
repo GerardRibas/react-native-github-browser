@@ -25,18 +25,20 @@ class Login extends Component {
 	}
 	
 	render(){
-		var errorCtl = <View />;
+		var errorCtrl = <View />;
 
-		if(!this.state.success && this.state.badCredentials) {
-			errorCtl = <Text style={styles.error}>
-				That username and password combination did not work
-			</Text>
-		} else if(!this.state.success && this.state.unknownError) {
-			errorCtl = <Text style={styles.error}>
-				We experiencied an unexpected issue
-			</Text>
-		}
+        if(!this.state.success && this.state.badCredentials){
+            errorCtrl = <Text style={styles.error}>
+                That username and password combination did not work
+            </Text>;
+        }
 
+        if(!this.state.success && this.state.unknownError){
+            errorCtrl = <Text style={styles.error}>
+                We experienced an unexpected issue
+            </Text>;
+        }
+		
 		return (
 			<View style={styles.container}>
 				<Image style={styles.logo} source={require('image!Octocat')} />
@@ -51,14 +53,14 @@ class Login extends Component {
 					onChangeText={(text) => this.setState({password:text})}
 					style={styles.input}
 					placeholder="Github password" 
-					secureTextEntry="true" />
+					secureTextEntry={true} />
 				<TouchableHighlight
 					onPress={this.onLoginPressed.bind(this)}
 					style={styles.button}>
 					<Text style={styles.buttonText}>Login</Text>
 				</TouchableHighlight>
 
-				{errorCtl}
+				{errorCtrl}
 
 				<ActivityIndicatorIOS 
 					animating={this.state.showProgress}
@@ -72,35 +74,16 @@ class Login extends Component {
 		console.log('Attempting to log');
 		this.setState({showProgress: true});
 
-		var b = new buffer.Buffer(this.state.username +':'+ this.state.password);
-		var encodedAuth = b.toString('base64');
-
-		fetch('https://api.github.com/user',{
-			headers : {
-				'Authorization' : 'Basic ' + encodedAuth
+		var authService = require('./AuthService');
+		authService.login({
+			username: this.state.username,
+			password: this.state.password
+		}, (results) => {
+			 this.setState(Object.assign({ showProgress: false }, results));
+			
+			 if(results.success && this.props.onLogin) {
+				this.props.onLogin();
 			}
-		})
-		.then((response) => {
-			if(response.status >= 200 && response.status < 300) {
-				return response;
-			}
-			throw {
-				badCredentials: response.status === 401,
-				unknownError: response.status != 401
-			}
-		})
-		.then((response) => {
-			return response.json();
-		})
-		.then((results) => {
-			console.log(results);
-			this.setState({success:true});
-		})
-		.catch((err) => {
-			this.setState(err)
-		})
-		.finally(() => {
-			this.setState({showProgress:false});
 		});
 	}
 };

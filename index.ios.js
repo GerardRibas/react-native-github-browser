@@ -10,15 +10,55 @@ var {
   StyleSheet,
   Text,
   View,
+  ActivityIndicatorIOS,
 } = React;
 
 var Login = require('./Login');
+var AuthService = require('./AuthService');
 
 var GithubBrowser = React.createClass({
+  getInitialState: function(){
+    return { 
+      isLoggedIn: false,
+      checkingAuth: true
+    }
+  },
+  componentDidMount : function() {
+    AuthService.getAuthInfo((err, authInfo) => {
+      this.setState({
+        checkingAuth : false,
+        isLoggedIn : authInfo != null
+      });
+    });
+  },
   render: function() {
-    return (
-      <Login />
-    );
+    if(this.state.checkingAuth){
+      return (
+        <View style={styles.container}>
+          <ActivityIndicatorIOS
+            animating={true}
+            size="large"
+            style={styles.loader} />
+        </View>
+      );
+    }
+    
+    if(this.state.isLoggedIn) {
+      return (
+        <View style={styles.container} >
+          <Text style={styles.welcome} >Logged In</Text>
+        </View>
+      );
+    } else {
+      return (
+        <Login onLogin={this.onLogin} />
+      );
+    }
+  },
+  onLogin: function(){
+    this.setState({
+      isLoggedIn: true
+    });
   }
 });
 
