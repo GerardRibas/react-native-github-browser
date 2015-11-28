@@ -8,6 +8,7 @@ var {
   Component,
   ListView,
   ActivityIndicatorIOS,
+  StyleSheet,
   Image
 } = React;
 
@@ -54,34 +55,21 @@ class Feed extends Component {
 
 	renderRow(rowData) {
 		return (
-			<View style={{
-				flex: 1,
-				flexDirection: 'row',
-				padding: 20,
-				alignItems: 'center',
-				borderColor: '#D7D7D7',
-				borderBottomWidth: 1,
-			}}>
+			<View style={styles.viewRowData}>
 				<Image
 					source={{uri: rowData.actor.avatar_url}}
-					style={{
-						height: 36,
-						width: 36,
-						borderRadius: 18
-					}} />
+					style={styles.imageRowData} />
 			
-				<View style={{ paddingLeft: 20 }}>
+				<View style={styles.viewRowDataDetail}>
 					
-					<Text style={{backgroundColor: '#FFF'}}>
+					<Text style={styles.rowDataDetailText}>
 						{moment(rowData.created_at).fromNow()}
 					</Text>
-					<Text style={{backgroundColor: '#FFF'}}>
+					<Text style={styles.rowDataDetailText}>
 						{rowData.actor.login}
 					</Text>
-					<Text style={{backgroundColor: '#FFF'}}>
-						at <Text style={{
-							fontWeight: "600"
-						}}>{rowData.repo.name}</Text>
+					<Text style={styles.rowDataDetailText}>
+						at <Text style={styles.rowDataDetailTextBold}>{rowData.repo.name}</Text>
 					</Text>
 				</View>
 			</View>
@@ -91,10 +79,7 @@ class Feed extends Component {
 	render(){
     	if(this.state.showProgress) {
     		return (
-    			<View style={{
-    				flex: 1,
-    				justifyContent: 'center'
-    			}}>
+    			<View style={styles.showProgress}>
     				<ActivityIndicatorIOS 
     					size="large"
     					animating={true} />
@@ -102,10 +87,7 @@ class Feed extends Component {
     		)
     	}
     	return (
-    		<View style={{
-    			flex: 1,
-    			justifyContent: 'flex-start'
-    		}}>
+    		<View style={styles.container}>
     			<ListView
     				dataSource={this.state.dataSource}
     				renderRow={this.renderRow.bind(this)} />
@@ -114,5 +96,32 @@ class Feed extends Component {
   }
 
 }
+
+var styles = StyleSheet.create({
+	container:{
+		flex: 1,
+    	justifyContent: 'flex-start'
+	},
+	viewRowData: {
+		flex: 1,
+		flexDirection: 'row',
+		padding: 20,
+		alignItems: 'center',
+		borderColor: '#D7D7D7',
+		borderBottomWidth: 1,
+	},
+	imageRowData: {
+		height: 36,
+		width: 36,
+		borderRadius: 18
+	},
+	viewRowDataDetail:{ paddingLeft: 20 },
+	rowDataDetailText: {backgroundColor: '#FFF'},
+	rowDataDetailTextBold: {fontWeight: '600'},
+	showProgress: {
+		flex: 1,
+    	justifyContent: 'center'
+	}
+});
 
 module.exports= Feed; 
