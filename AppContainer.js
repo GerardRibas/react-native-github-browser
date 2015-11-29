@@ -11,7 +11,8 @@ var {
   NavigatorIOS
 } = React;
 
-var Feed = require('./Feed')
+var Feed = require('./Feed');
+var Search = require('./Search');
 
 class AppContainer extends Component {
 
@@ -42,7 +43,12 @@ class AppContainer extends Component {
           selected={this.state.selectedTab == 'search'} 
           icon={require('image!search')} 
           onPress={() => this.setState({selectedTab : 'search'})} >
-            <Text style={styles.welcome}>Tab 2</Text>
+            <NavigatorIOS 
+              style={styles.navigator}
+              initialRoute={{
+                component : Search,
+                title: 'Search'
+              }} />
           </TabBarIOS.Item>
       </TabBarIOS>
     );
